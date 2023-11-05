@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, EmailField
-from wtforms.validators import DataRequired, Email, ValidationError, Length;
+from wtforms.validators import DataRequired, Email, ValidationError, Length, EqualTo;
 import re;
 
 
@@ -11,10 +11,12 @@ def character_check(self, field):
         if char in exclude_chars:
             raise ValidationError(f"Character {char} is not allowed.")
 
+
 def is_valid_phone_number(self, phone):
     pattern = re.compile(r'^\d{4}-\d{3}-\d{4}$')
     if not pattern.match(phone.data):
         raise ValidationError(f"Phone number must be in form XXXX-XXX-XXXX")
+
 
 def is_valid_password(self, password):
     pattern = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)')
@@ -29,5 +31,6 @@ class RegisterForm(FlaskForm):
     lastname = StringField(validators=[character_check, DataRequired()])
     phone = StringField(validators=[is_valid_phone_number, DataRequired()])
     password = PasswordField(validators=[Length(min=6, max=12), is_valid_password, DataRequired()])
-    confirm_password = PasswordField()
+    confirm_password = PasswordField(validators=[DataRequired(), EqualTo('password', message='Both password fields '
+                                                                                             'must be equal!')])
     submit = SubmitField()
