@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, EmailField
-from wtforms.validators import DataRequired, Email, ValidationError;
+from wtforms.validators import DataRequired, Email, ValidationError, Length;
 import re;
 
 
@@ -16,13 +16,18 @@ def is_valid_phone_number(self, phone):
     if not pattern.match(phone.data):
         raise ValidationError(f"Phone number must be in form XXXX-XXX-XXXX")
 
+def is_valid_password(self, password):
+    pattern = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)')
+    if not pattern.match(password.data):
+        raise ValidationError(f"Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit and 1 "
+                              f"special character.")
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField(validators=[Email()])
-    firstname = StringField(validators=[character_check])
-    lastname = StringField(validators=[character_check])
-    phone = StringField(validators=[is_valid_phone_number])
-    password = PasswordField()
+    email = EmailField(validators=[Email(), DataRequired()])
+    firstname = StringField(validators=[character_check, DataRequired()])
+    lastname = StringField(validators=[character_check, DataRequired()])
+    phone = StringField(validators=[is_valid_phone_number, DataRequired()])
+    password = PasswordField(validators=[Length(min=6, max=12), is_valid_password, DataRequired()])
     confirm_password = PasswordField()
     submit = SubmitField()
