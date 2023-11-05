@@ -27,7 +27,7 @@ def is_valid_password(self, password):
 
 def date_of_birth_validator(self, date_of_birth):
     pattern = re.compile(r'^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\d{2}$')
-    if not pattern.match(date_of_birth):
+    if not pattern.match(date_of_birth.data):
         raise ValidationError(f"Invalid date, must be DD/MM/YYYY")
 
 

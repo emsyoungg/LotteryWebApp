@@ -22,13 +22,13 @@ class User(db.Model, UserMixin):
     draws = db.relationship('Draw')
 
     def __init__(self, email, firstname, lastname, phone, password, date_of_birth, role):
+        self.date_of_birth = date_of_birth
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone
         self.password = password
         self.role = role
-        self.date_of_birth
 
 
 class Draw(db.Model):
