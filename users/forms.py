@@ -39,6 +39,6 @@ class RegisterForm(FlaskForm):
     password = PasswordField(validators=[Length(min=6, max=12), is_valid_password, DataRequired()])
     confirm_password = PasswordField(validators=[DataRequired(), EqualTo('password', message='Both password fields '
                                                                                              'must be equal!')])
-    date_of_birth = StringField(validators=[])
+    date_of_birth = StringField(validators=[DataRequired(), date_of_birth_validator])
 
     submit = SubmitField()
