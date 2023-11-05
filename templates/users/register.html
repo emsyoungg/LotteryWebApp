@@ -62,6 +62,15 @@
                     </div>
 
                 </div>
+                <div class="field">
+                    <div class="control">
+                        {{ form.date_of_birth(class="input", placeholder="Date of Birth") }}
+                        {% for error in form.date_of_birth.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+
+                </div>
                 <div>
                     {{ form.submit(class="button is-info is-centered") }}
                 </div>

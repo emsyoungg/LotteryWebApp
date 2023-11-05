@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, EmailField
-from wtforms.validators import DataRequired, Email, ValidationError, Length, EqualTo;
-import re;
+from wtforms.validators import DataRequired, Email, ValidationError, Length, EqualTo
+import re
 
 
 def character_check(self, field):
@@ -25,6 +25,12 @@ def is_valid_password(self, password):
                               f"special character.")
 
 
+def date_of_birth_validator(self, date_of_birth):
+    pattern = re.compile(r'^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\d{2}$')
+    if not pattern.match(date_of_birth):
+        raise ValidationError(f"Invalid date, must be DD/MM/YYYY")
+
+
 class RegisterForm(FlaskForm):
     email = EmailField(validators=[Email(), DataRequired()])
     firstname = StringField(validators=[character_check, DataRequired()])
@@ -33,4 +39,6 @@ class RegisterForm(FlaskForm):
     password = PasswordField(validators=[Length(min=6, max=12), is_valid_password, DataRequired()])
     confirm_password = PasswordField(validators=[DataRequired(), EqualTo('password', message='Both password fields '
                                                                                              'must be equal!')])
+    date_of_birth = StringField(validators=[])
+
     submit = SubmitField()

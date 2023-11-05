@@ -31,6 +31,7 @@ def register():
                         lastname=form.lastname.data,
                         phone=form.phone.data,
                         password=form.password.data,
+                        date_of_birth=form.date_of_birth.data,
                         role='user')
 
         # add the new user to the database
@@ -57,4 +58,5 @@ def account():
                            email="PLACEHOLDER FOR USER EMAIL",
                            firstname="PLACEHOLDER FOR USER FIRSTNAME",
                            lastname="PLACEHOLDER FOR USER LASTNAME",
-                           phone="PLACEHOLDER FOR USER PHONE")
+                           phone="PLACEHOLDER FOR USER PHONE",
+                           date_of_birth="PLACEHOLDER FOR DOB")
