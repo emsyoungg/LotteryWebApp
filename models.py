@@ -3,6 +3,11 @@ from flask_login import UserMixin
 
 
 class User(db.Model, UserMixin):
+
+    def verify_password(self, password):
+        return self.password == password
+
+
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)

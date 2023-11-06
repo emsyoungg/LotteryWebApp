@@ -1,9 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <h3 class="title is-3">Login</h3>
-
-    <p>TODO</p>
-
+    <div class="column is-5 is-offset-4">
+        <h3 class="title">Login</h3>
+        <div class="box">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+                <form method="POST">
+                    <div class="field">
+                        {{ loginForm.csrf_token() }}
+                        <div class="control">
+                            {{ loginForm.username(class="input", placeholder="Username") }}
+                            {% for error in loginForm.username.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            {{ loginForm.password(class="input", placeholder="Password") }}
+                        </div>
+                    </div>
+                    <div>
+                        {{ loginForm.submit(class="button is-info is-centered") }}
+                    </div>
+                </form>
+        </div>
+    </div>
 {% endblock %}
