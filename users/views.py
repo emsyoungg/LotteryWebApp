@@ -57,7 +57,7 @@ def login():
             flash('Please check your login details and try again')
             return render_template('users/login.html', loginForm=loginForm)
         else:
-            return redirect(url_for('main.index'))
+            return redirect(url_for('index'))
 
     return render_template('users/login.html', loginForm=loginForm)
 
