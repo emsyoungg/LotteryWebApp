@@ -32,18 +32,17 @@ app.register_blueprint(users_blueprint)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(lottery_blueprint)
 
-
 # FLASK LOGIN MANAGER
-login_manager = LoginManager
+login_manager = LoginManager(app)
 login_manager.login_view = 'users.login'
-login_manager.init_app(app)
+
 
 from models import User
+
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
 
 
 # ERROR HANDLING

@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for
 from app import db
 from models import User
 from users.forms import RegisterForm, LoginForm
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 # CONFIG
 users_blueprint = Blueprint('users', __name__, template_folder='templates')
@@ -75,3 +75,9 @@ def account():
                            lastname="PLACEHOLDER FOR USER LASTNAME",
                            phone="PLACEHOLDER FOR USER PHONE",
                            date_of_birth="PLACEHOLDER FOR DOB")
+
+
+@users_blueprint.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
