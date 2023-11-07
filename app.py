@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_qrcode import QRcode
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = os.getenv('RECAPTCHA_PRIVATE_KEY')
 # initialise database
 db = SQLAlchemy(app)
 
+qrcode = QRcode(app)
 
 # HOME PAGE VIEW
 @app.route('/')

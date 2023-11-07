@@ -29,6 +29,11 @@
                     <div>
                         {{ loginForm.recaptcha }}
                     </div>
+                    <div class="field">
+                        <div class="control">
+                            {{ loginForm.pin(class="input", placeholder="Time-based PIN") }}
+                        </div>
+                    </div>
                     <div>
                         {{ loginForm.submit(class="button is-info is-centered") }}
                     </div>

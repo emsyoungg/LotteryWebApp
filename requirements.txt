@@ -6,3 +6,5 @@ flask_wtf
 WTForms
 email_validator
 python-dotenv
+pyotp
+flask-qrcode

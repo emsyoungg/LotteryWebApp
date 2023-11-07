@@ -1,5 +1,5 @@
 # IMPORTS
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, session
 from app import db
 from models import User
 from users.forms import RegisterForm, LoginForm
@@ -39,8 +39,10 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
+        # stores users username in apps session for setup_2fa to access
+        session['username'] = new_user.email
         # sends user to login page
-        return redirect(url_for('users.login'))
+        return redirect(url_for('users.setup_2fa'))
     # if request method is GET or form not valid re-render signup page
     return render_template('users/register.html', form=form)
 
@@ -54,7 +56,7 @@ def login():
 
         user = User.query.filter_by(email=loginForm.username.data).first()
 
-        if not user or not user.verify_password(loginForm.password.data):
+        if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data):
             flash('Please check your login details and try again')
             return render_template('users/login.html', loginForm=loginForm)
         else:
@@ -81,3 +83,21 @@ def account():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@users_blueprint.route('/setup_2fa')
+def setup_2fa():
+    if 'username' not in session:
+        return redirect(url_for('main.index'))
+
+    user = User.query.filter_by(email=session['username']).first()
+
+    if not user:
+        return redirect(url_for('index'))
+
+    del session['username']
+    return render_template('users/setup_2fa.html', email=user.email, uri=user.get_2fa_uri()), 200, {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    }
