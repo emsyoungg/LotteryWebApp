@@ -11,6 +11,7 @@
                     </div>
                 {% endif %}
             {% endwith %}
+            {% if loginForm %}
                 <form method="POST">
                     <div class="field">
                         {{ loginForm.csrf_token() }}
@@ -38,6 +39,7 @@
                         {{ loginForm.submit(class="button is-info is-centered") }}
                     </div>
                 </form>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

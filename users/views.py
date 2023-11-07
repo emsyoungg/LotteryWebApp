@@ -1,5 +1,7 @@
 # IMPORTS
 from flask import Blueprint, render_template, flash, redirect, url_for, session
+from markupsafe import Markup
+
 from app import db
 from models import User
 from users.forms import RegisterForm, LoginForm
@@ -50,6 +52,9 @@ def register():
 # view user login
 @users_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    if not session.get('authentication_attempts'):
+        session['authentication_attempts'] = 0
+
     loginForm = LoginForm()
 
     if loginForm.validate_on_submit():
@@ -57,7 +62,14 @@ def login():
         user = User.query.filter_by(email=loginForm.username.data).first()
 
         if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data):
-            flash('Please check your login details and try again')
+            session['authentication_attempts'] += 1
+
+            if session.get('authentication_attempts') >= 3:
+                flash(Markup('Number of incorrect login attempts exceeded. Please click <a href="/reset"> here </a> '
+                             'to reset.'))
+                return render_template('users/login.html')
+
+            flash('Please check your login details and try again, {} login attempts remaining'.format(3 - session.get('authentication_attempts')))
             return render_template('users/login.html', loginForm=loginForm)
         else:
             flash('Login successful')
@@ -101,3 +113,8 @@ def setup_2fa():
         'Pragma': 'no-cache',
         'Expires': '0'
     }
+
+@users_blueprint.route('/reset')
+def reset():
+    session['authentication_attempts'] = 0
+    return redirect(url_for('users.login'))
