@@ -1,10 +1,11 @@
 werkzeug==2.3.7
-Flask
+Flask~=3.0.0
 flask_sqlalchemy
 flask_login
 flask_wtf
-WTForms
+WTForms~=3.1.0
 email_validator
-python-dotenv
-pyotp
+python-dotenv~=1.0.0
+pyotp~=2.9.0
 flask-qrcode
+MarkupSafe~=2.1.3

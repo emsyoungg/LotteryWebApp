@@ -1,6 +1,7 @@
 # IMPORTS
 from flask import Blueprint, render_template, flash, redirect, url_for, session
 from markupsafe import Markup
+from flask_login import login_required
 
 from app import db
 from models import User
@@ -72,7 +73,6 @@ def login():
             flash('Please check your login details and try again, {} login attempts remaining'.format(3 - session.get('authentication_attempts')))
             return render_template('users/login.html', loginForm=loginForm)
         else:
-            flash('Login successful')
             login_user(user)
             return redirect(url_for('index'))
 
@@ -81,6 +81,7 @@ def login():
 
 # view user account
 @users_blueprint.route('/account')
+@login_required
 def account():
     return render_template('users/account.html',
                            acc_no="PLACEHOLDER FOR USER ID",
@@ -92,6 +93,7 @@ def account():
 
 
 @users_blueprint.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
