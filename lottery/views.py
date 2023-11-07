@@ -64,7 +64,7 @@ def view_draws():
 @login_required
 def check_draws():
     # get played draws
-    played_draws = Draw.query.filter_by(been_played=True).all()
+    played_draws = Draw.query.filter_by(been_played=True, user_id=current_user.id).all()
 
     # if played draws exist
     if len(played_draws) != 0:
@@ -80,7 +80,7 @@ def check_draws():
 @lottery_blueprint.route('/play_again', methods=['POST'])
 @login_required
 def play_again():
-    Draw.query.filter_by(been_played=True, master_draw=False).delete(synchronize_session=False)
+    Draw.query.filter_by(been_played=True, master_draw=False, user_id=current_user.id).delete(synchronize_session=False)
     db.session.commit()
 
     flash("All played draws deleted.")

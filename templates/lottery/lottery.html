@@ -97,16 +97,18 @@
 
                         {# render results #}
                         {% for draw in results %}
-                            <tr>
-                                <td>{{ draw.lottery_round }}</td>
-                                <td>{{ draw.numbers }}</td>
-                                <td>{{ draw.been_played }}</td>
-                                {% if draw.matches_master %}
-                                    <td style="background-color: yellow">{{ draw.matches_master }}</td>
-                                {% else %}
-                                    <td>{{ draw.matches_master }}</td>
-                                {% endif %}
-                            </tr>
+                            {% if current_user.id == draw.user_id %}
+                                <tr>
+                                    <td>{{ draw.lottery_round }}</td>
+                                    <td>{{ draw.numbers }}</td>
+                                    <td>{{ draw.been_played }}</td>
+                                    {% if draw.matches_master %}
+                                        <td style="background-color: yellow">{{ draw.matches_master }}</td>
+                                    {% else %}
+                                        <td>{{ draw.matches_master }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </table>
                 </div>
