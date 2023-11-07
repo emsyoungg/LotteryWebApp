@@ -68,7 +68,9 @@
 
                     {# render playable draws #}
                     {% for draw in playable_draws %}
-                        <p>{{ draw.numbers }}</p>
+                        {% if current_user.id == draw.user_id %}
+                            <p>{{ draw.numbers }}</p>
+                        {% endif %}
                     {% endfor %}
 
                 </div>
