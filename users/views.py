@@ -70,7 +70,8 @@ def login():
                              'to reset.'))
                 return render_template('users/login.html')
 
-            flash('Please check your login details and try again, {} login attempts remaining'.format(3 - session.get('authentication_attempts')))
+            flash('Please check your login details and try again, {} login attempts remaining'.format(
+                3 - session.get('authentication_attempts')))
             return render_template('users/login.html', loginForm=loginForm)
         else:
             login_user(user)
@@ -120,6 +121,7 @@ def setup_2fa():
         'Expires': '0'
     }
 
+
 @users_blueprint.route('/reset')
 def reset():
     session['authentication_attempts'] = 0
@@ -131,13 +133,18 @@ def update_password():
     form = PasswordForm()
 
     if form.validate_on_submit():
-        if current_user.password == form.new_password.data:
-            flash('New password must be different to current password')
+
+        if current_user.password != form.current_password.data:
+            flash("Incorrect current password")
             return render_template('users/update_password.html', form=form)
         else:
-            current_user.password = form.new_password.data
-            db.session.commit()
-            flash('Password changed successfully')
+            if current_user.password == form.new_password.data:
+                flash('New password must be different to current password')
+                return render_template('users/update_password.html', form=form)
+            else:
+                current_user.password = form.new_password.data
+                db.session.commit()
+                flash('Password changed successfully')
 
         return redirect(url_for('users.account'))
 

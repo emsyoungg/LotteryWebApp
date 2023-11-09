@@ -45,12 +45,12 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-
     username = EmailField('Username', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     pin = StringField(validators=[DataRequired()])
     recaptcha = RecaptchaField()
     submit = SubmitField()
+
 
 class PasswordForm(FlaskForm):
 
@@ -61,9 +61,11 @@ class PasswordForm(FlaskForm):
                 f"Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit and 1 "
                 f"special character.")
 
-
     current_password = PasswordField(id='password', validators=[DataRequired()])
     show_password = BooleanField('Show password', id='check')
-    new_password = PasswordField(validators=[DataRequired(), Length(min=6, max=12, message="Must be between 6 and 12 characters in length"), is_valid_password])
-    confirm_new_password = PasswordField(validators=[DataRequired(), EqualTo('new_password', message='Both new password fields must be equal')])
+    new_password = PasswordField(
+        validators=[DataRequired(), Length(min=6, max=12, message="Must be between 6 and 12 characters in length"),
+                    is_valid_password])
+    confirm_new_password = PasswordField(
+        validators=[DataRequired(), EqualTo('new_password', message='Both new password fields must be equal')])
     submit = SubmitField('Change Password')
