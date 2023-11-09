@@ -1,4 +1,6 @@
 # IMPORTS
+from datetime import datetime
+
 from flask import Blueprint, render_template, flash, redirect, url_for, session
 from markupsafe import Markup
 from flask_login import login_required, current_user
@@ -75,6 +77,10 @@ def login():
             return render_template('users/login.html', loginForm=loginForm)
         else:
             login_user(user)
+            current_user.last_login = current_user.current_login
+            current_user.current_login = datetime.now()
+            db.session.commit()
+
             if user.role == 'admin':
                 return redirect(url_for('admin.admin'))
             else:

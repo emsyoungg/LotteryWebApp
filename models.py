@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pyotp
 
 from app import db, app
@@ -33,6 +35,9 @@ class User(db.Model, UserMixin):
     date_of_birth = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(100), nullable=False, default='user')
     pin_key = db.Column(db.String(32), nullable=False, default=pyotp.random_base32())
+    registered_on = db.Column(db.DateTime, nullable=False)
+    current_login = db.Column(db.DateTime, nullable=True)
+    last_login = db.Column(db.DateTime, nullable=True)
 
     # Define the relationship to Draw
     draws = db.relationship('Draw')
@@ -45,6 +50,9 @@ class User(db.Model, UserMixin):
         self.phone = phone
         self.password = password
         self.role = role
+        self.registered_on = datetime.now()
+        self.current_login = None
+        self.last_login = None
 
 
 class Draw(db.Model):
