@@ -1,9 +1,9 @@
 # IMPORTS
 import random
 from flask import Blueprint, render_template, flash, redirect, url_for
-from app import db
+from app import db, requires_roles
 from models import User, Draw
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 # CONFIG
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
@@ -13,6 +13,7 @@ admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
 # view admin homepage
 @admin_blueprint.route('/admin')
 @login_required
+@requires_roles('admin')
 def admin():
     return render_template('admin/admin.html', name="PLACEHOLDER FOR FIRSTNAME")
 
@@ -20,6 +21,7 @@ def admin():
 # create a new winning draw
 @admin_blueprint.route('/generate_winning_draw')
 @login_required
+@requires_roles('admin')
 def generate_winning_draw():
 
     # get current winning draw
@@ -44,7 +46,7 @@ def generate_winning_draw():
     winning_numbers_string = winning_numbers_string[:-1]
 
     # create a new draw object.
-    new_winning_draw = Draw(user_id=0, numbers=winning_numbers_string, master_draw=True, lottery_round=lottery_round)
+    new_winning_draw = Draw(user_id=current_user.id, numbers=winning_numbers_string, master_draw=True, lottery_round=lottery_round)
 
     # add the new winning draw to the database
     db.session.add(new_winning_draw)
@@ -58,6 +60,7 @@ def generate_winning_draw():
 # view current winning draw
 @admin_blueprint.route('/view_winning_draw')
 @login_required
+@requires_roles('admin')
 def view_winning_draw():
 
     # get winning draw from DB
@@ -76,6 +79,7 @@ def view_winning_draw():
 # view lottery results and winners
 @admin_blueprint.route('/run_lottery')
 @login_required
+@requires_roles('admin')
 def run_lottery():
 
     # get current unplayed winning draw
@@ -139,6 +143,7 @@ def run_lottery():
 # view all registered users
 @admin_blueprint.route('/view_all_users')
 @login_required
+@requires_roles('admin')
 def view_all_users():
     current_users = User.query.filter_by(role='user').all()
 
@@ -148,6 +153,7 @@ def view_all_users():
 # view last 10 log entries
 @admin_blueprint.route('/logs')
 @login_required
+@requires_roles('admin')
 def logs():
     with open("lottery.log", "r") as f:
         content = f.read().splitlines()[-10:]

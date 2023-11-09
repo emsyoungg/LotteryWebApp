@@ -1,5 +1,6 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField
 from wtforms.validators import DataRequired, Email, ValidationError, Length, EqualTo
 import re
 from flask_wtf import RecaptchaField
@@ -50,3 +51,19 @@ class LoginForm(FlaskForm):
     pin = StringField(validators=[DataRequired()])
     recaptcha = RecaptchaField()
     submit = SubmitField()
+
+class PasswordForm(FlaskForm):
+
+    def is_valid_password(self, new_password):
+        pattern = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)')
+        if not pattern.match(new_password.data):
+            raise ValidationError(
+                f"Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit and 1 "
+                f"special character.")
+
+
+    current_password = PasswordField(id='password', validators=[DataRequired()])
+    show_password = BooleanField('Show password', id='check')
+    new_password = PasswordField(validators=[DataRequired(), Length(min=6, max=12, message="Must be between 6 and 12 characters in length"), is_valid_password])
+    confirm_new_password = PasswordField(validators=[DataRequired(), EqualTo('new_password', message='Both new password fields must be equal')])
+    submit = SubmitField('Change Password')

@@ -1,11 +1,11 @@
 # IMPORTS
 from flask import Blueprint, render_template, flash, redirect, url_for, session
 from markupsafe import Markup
-from flask_login import login_required
+from flask_login import login_required, current_user
 
-from app import db
+from app import db, requires_roles
 from models import User
-from users.forms import RegisterForm, LoginForm
+from users.forms import RegisterForm, LoginForm, PasswordForm
 from flask_login import login_user, logout_user
 
 # CONFIG
@@ -74,7 +74,10 @@ def login():
             return render_template('users/login.html', loginForm=loginForm)
         else:
             login_user(user)
-            return redirect(url_for('index'))
+            if user.role == 'admin':
+                return redirect(url_for('admin.admin'))
+            else:
+                return redirect(url_for('index'))
 
     return render_template('users/login.html', loginForm=loginForm)
 
@@ -82,14 +85,15 @@ def login():
 # view user account
 @users_blueprint.route('/account')
 @login_required
+@requires_roles('admin', 'user')
 def account():
     return render_template('users/account.html',
-                           acc_no="PLACEHOLDER FOR USER ID",
-                           email="PLACEHOLDER FOR USER EMAIL",
-                           firstname="PLACEHOLDER FOR USER FIRSTNAME",
-                           lastname="PLACEHOLDER FOR USER LASTNAME",
-                           phone="PLACEHOLDER FOR USER PHONE",
-                           date_of_birth="PLACEHOLDER FOR DOB")
+                           acc_no=current_user.id,
+                           email=current_user.email,
+                           firstname=current_user.firstname,
+                           lastname=current_user.lastname,
+                           phone=current_user.phone,
+                           date_of_birth=current_user.date_of_birth)
 
 
 @users_blueprint.route('/logout')
@@ -120,3 +124,21 @@ def setup_2fa():
 def reset():
     session['authentication_attempts'] = 0
     return redirect(url_for('users.login'))
+
+
+@users_blueprint.route('/update_password', methods=['GET', 'POST'])
+def update_password():
+    form = PasswordForm()
+
+    if form.validate_on_submit():
+        if current_user.password == form.new_password.data:
+            flash('New password must be different to current password')
+            return render_template('users/update_password.html', form=form)
+        else:
+            current_user.password = form.new_password.data
+            db.session.commit()
+            flash('Password changed successfully')
+
+        return redirect(url_for('users.account'))
+
+    return render_template('users/update_password.html', form=form)
