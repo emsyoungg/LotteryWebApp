@@ -1,7 +1,8 @@
 # IMPORTS
+import logging
 from datetime import datetime
 
-from flask import Blueprint, render_template, flash, redirect, url_for, session
+from flask import Blueprint, render_template, flash, redirect, url_for, session, request
 from markupsafe import Markup
 from flask_login import login_required, current_user
 
@@ -46,6 +47,10 @@ def register():
 
         # stores users username in apps session for setup_2fa to access
         session['username'] = new_user.email
+
+        # logs user registration
+        logging.warning('SECURITY - User registration [%s, %s]', form.email.data, request.remote_addr)
+
         # sends user to login page
         return redirect(url_for('users.setup_2fa'))
     # if request method is GET or form not valid re-render signup page
@@ -66,6 +71,7 @@ def login():
 
         if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data):
             session['authentication_attempts'] += 1
+            logging.warning('SECURITY - Invalid Log In Attempt [%s, %s]', loginForm.username.data, request.remote_addr)
 
             if session.get('authentication_attempts') >= 3:
                 flash(Markup('Number of incorrect login attempts exceeded. Please click <a href="/reset"> here </a> '
@@ -77,6 +83,8 @@ def login():
             return render_template('users/login.html', loginForm=loginForm)
         else:
             login_user(user)
+            logging.warning('SECURITY - User login [%s, %s, %s]', current_user.id, loginForm.username.data,
+                            request.remote_addr)
             current_user.last_login = current_user.current_login
             current_user.current_login = datetime.now()
             db.session.commit()
@@ -106,6 +114,8 @@ def account():
 @users_blueprint.route('/logout')
 @login_required
 def logout():
+    logging.warning('SECURITY - User log out [%s, %s, %s]', current_user.id, current_user.email,
+                    request.remote_addr)
     logout_user()
     return redirect(url_for('index'))
 
