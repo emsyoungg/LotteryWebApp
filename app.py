@@ -58,7 +58,7 @@ def requires_roles(*roles):
             if current_user.role not in roles:
                 logging.warning('SECURITY - Unauthorised Access Attempts [%s, %s, %s, %s]', current_user.id,
                                 current_user.email, current_user.role, request.remote_addr)
-                return render_template('403.html')
+                return render_template('errors/403.html')
             return f(*args, **kwargs)
 
         return wrapped
