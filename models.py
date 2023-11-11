@@ -67,6 +67,11 @@ class User(db.Model, UserMixin):
 
 
 class Draw(db.Model):
+
+    def view_draw(self, post_key):
+        self.numbers = decrypt(self.numbers, post_key)
+
+
     __tablename__ = 'draws'
 
     id = db.Column(db.Integer, primary_key=True)

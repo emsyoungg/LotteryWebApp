@@ -1,5 +1,7 @@
 # IMPORTS
 from flask import Blueprint, render_template, request, flash, redirect, url_for
+from sqlalchemy.orm import make_transient
+
 from app import db, requires_roles
 from lottery.forms import DrawForm
 from models import Draw
@@ -42,7 +44,7 @@ def create_draw():
         flash('Draw %s submitted.' % submitted_numbers)
         return redirect(url_for('lottery.lottery'))
 
-    return render_template('lottery/lottery.html', name="PLACEHOLDER FOR FIRSTNAME", form=form)
+    return render_template('lottery/lottery.html', name=current_user.firstname, form=form)
 
 
 # view all draws that have not been played
@@ -51,10 +53,12 @@ def create_draw():
 @requires_roles('user')
 def view_draws():
     # get all draws that have not been played [played=0]
-    playable_draws = Draw.query.filter_by(been_played=False).all()
+    playable_draws = Draw.query.filter_by(been_played=False, user_id=current_user.id).all()
 
     # if playable draws exist
     if len(playable_draws) != 0:
+        make_transient(playable_draws)
+        playable_draws.view_draw(current_user.post_key)
         # re-render lottery page with playable draws
         return render_template('lottery/lottery.html', playable_draws=playable_draws)
     else:

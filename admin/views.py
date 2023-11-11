@@ -1,6 +1,8 @@
 # IMPORTS
 import random
 from flask import Blueprint, render_template, flash, redirect, url_for
+from sqlalchemy.orm import make_transient
+
 from app import db, requires_roles
 from models import User, Draw
 from flask_login import login_required, current_user
@@ -68,6 +70,9 @@ def view_winning_draw():
 
     # if a winning draw exists
     if current_winning_draw:
+
+        make_transient(current_winning_draw)
+        current_winning_draw.view_draw(current_user.post_key)
         # re-render admin page with current winning draw and lottery round
         return render_template('admin/admin.html', winning_draw=current_winning_draw, name=current_user.firstname)
 
