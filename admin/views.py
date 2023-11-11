@@ -15,7 +15,7 @@ admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
 @login_required
 @requires_roles('admin')
 def admin():
-    return render_template('admin/admin.html', name="PLACEHOLDER FOR FIRSTNAME")
+    return render_template('admin/admin.html', name=current_user.firstname)
 
 
 # create a new winning draw
@@ -69,7 +69,7 @@ def view_winning_draw():
     # if a winning draw exists
     if current_winning_draw:
         # re-render admin page with current winning draw and lottery round
-        return render_template('admin/admin.html', winning_draw=current_winning_draw, name="PLACEHOLDER FOR FIRSTNAME")
+        return render_template('admin/admin.html', winning_draw=current_winning_draw, name=current_user.firstname)
 
     # if no winning draw exists, rerender admin page
     flash("No valid winning draw exists. Please add new winning draw.")
@@ -130,7 +130,7 @@ def run_lottery():
             if len(results) == 0:
                 flash("No winners.")
 
-            return render_template('admin/admin.html', results=results, name="PLACEHOLDER FOR FIRSTNAME")
+            return render_template('admin/admin.html', results=results, name=current_user.firstname)
 
         flash("No user draws entered.")
         return admin()
@@ -147,7 +147,7 @@ def run_lottery():
 def view_all_users():
     current_users = User.query.filter_by(role='user').all()
 
-    return render_template('admin/admin.html', name="PLACEHOLDER FOR FIRSTNAME", current_users=current_users)
+    return render_template('admin/admin.html', name=current_user.firstname, current_users=current_users)
 
 
 # view last 10 log entries
@@ -159,4 +159,12 @@ def logs():
         content = f.read().splitlines()[-10:]
         content.reverse()
 
-    return render_template('admin/admin.html', logs=content, name="PLACEHOLDER FOR FIRSTNAME")
+    return render_template('admin/admin.html', logs=content, name=current_user.firstname)
+
+
+@admin_blueprint.route('/view_user_activity')
+@login_required
+@requires_roles('admin')
+def view_user_activity():
+    all_users = User.query.filter_by(role='user').all()
+    return render_template('admin/admin.html', name=current_user.firstname, all_users=all_users)

@@ -5,3 +5,5 @@
 11/11/2023 03:30:35 PM : SECURITY - User login [2, emily03young@gmail.com, 127.0.0.1]
 11/11/2023 03:30:43 PM : SECURITY - Unauthorised Access Attempts [2, emily03young@gmail.com, user, 127.0.0.1]
 11/11/2023 03:32:40 PM : SECURITY - Unauthorised Access Attempts [2, emily03young@gmail.com, user, 127.0.0.1]
+11/11/2023 03:57:54 PM : SECURITY - User log out [2, emily03young@gmail.com, 127.0.0.1]
+11/11/2023 03:59:52 PM : SECURITY - User login [1, admin@email.com, 127.0.0.1]
