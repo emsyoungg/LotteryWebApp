@@ -5,6 +5,16 @@ import pyotp
 from app import db, app
 from flask_login import UserMixin
 
+from cryptography.fernet import Fernet
+
+
+def encrypt(data, post_key):
+    return Fernet(post_key).encrypt(bytes(data, 'utf-8'))
+
+
+def decrypt(data, post_key):
+    return Fernet(post_key).decrypt(data).decode('utf-8')
+
 
 class User(db.Model, UserMixin):
 
@@ -38,6 +48,7 @@ class User(db.Model, UserMixin):
     registered_on = db.Column(db.DateTime, nullable=False)
     current_login = db.Column(db.DateTime, nullable=True)
     last_login = db.Column(db.DateTime, nullable=True)
+    post_key = db.Column(db.BLOB, nullable=False, default=Fernet.generate_key())
 
     # Define the relationship to Draw
     draws = db.relationship('Draw')
@@ -78,9 +89,9 @@ class Draw(db.Model):
     # Lottery round that draw is used
     lottery_round = db.Column(db.Integer, nullable=False, default=0)
 
-    def __init__(self, user_id, numbers, master_draw, lottery_round):
+    def __init__(self, user_id, numbers, master_draw, lottery_round, post_key):
         self.user_id = user_id
-        self.numbers = numbers
+        self.numbers = encrypt(numbers, post_key)
         self.been_played = False
         self.matches_master = False
         self.master_draw = master_draw

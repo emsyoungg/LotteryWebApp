@@ -4,10 +4,10 @@ from app import db, requires_roles
 from lottery.forms import DrawForm
 from models import Draw
 from flask_login import login_required, current_user
+from cryptography.fernet import Fernet
 
 # CONFIG
 lottery_blueprint = Blueprint('lottery', __name__, template_folder='templates')
-
 
 # VIEWS
 # view lottery page
@@ -33,7 +33,7 @@ def create_draw():
                           + str(form.number5.data) + ' '
                           + str(form.number6.data))
         # create a new draw with the form data.
-        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0)
+        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0, post_key=current_user.post_key)
         # add the new draw to the database
         db.session.add(new_draw)
         db.session.commit()
