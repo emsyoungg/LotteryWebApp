@@ -57,8 +57,9 @@ def view_draws():
 
     # if playable draws exist
     if len(playable_draws) != 0:
-        make_transient(playable_draws)
-        playable_draws.view_draw(current_user.post_key)
+        for draw in playable_draws:
+            make_transient(draw)
+            draw.view_draw(current_user.post_key)
         # re-render lottery page with playable draws
         return render_template('lottery/lottery.html', playable_draws=playable_draws)
     else:
