@@ -6,6 +6,7 @@ from app import db, app
 from flask_login import UserMixin
 
 from cryptography.fernet import Fernet
+import bcrypt
 
 
 def encrypt(data, post_key):
@@ -28,7 +29,7 @@ class User(db.Model, UserMixin):
         )
 
     def verify_password(self, password):
-        return self.password == password
+        return bcrypt.checkpw(password.encode('utf-8'), self.password)
 
     __tablename__ = 'users'
 
@@ -59,7 +60,7 @@ class User(db.Model, UserMixin):
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone
-        self.password = password
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         self.role = role
         self.registered_on = datetime.now()
         self.current_login = None
