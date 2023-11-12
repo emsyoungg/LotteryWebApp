@@ -1,4 +1,5 @@
 # IMPORTS
+import math
 import random
 from flask import Blueprint, render_template, flash, redirect, url_for
 from sqlalchemy.orm import make_transient
@@ -40,7 +41,7 @@ def generate_winning_draw():
         db.session.commit()
 
     # get new winning numbers for draw
-    winning_numbers = random.sample(range(1, 60), 6)
+    winning_numbers = [math.floor(random.uniform(1, 60)) for n in range(6)]
     winning_numbers.sort()
     winning_numbers_string = ''
     for i in range(6):

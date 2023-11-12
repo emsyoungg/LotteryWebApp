@@ -10,12 +10,12 @@
 
     <div class="column is-8 is-offset-2">
         {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="notification is-danger">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-        {% endwith %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
         <h4 class="title is-4">Create Draw</h4>
         <div class="box">

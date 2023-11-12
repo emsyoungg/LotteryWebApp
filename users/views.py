@@ -123,7 +123,7 @@ def logout():
 @users_blueprint.route('/setup_2fa')
 def setup_2fa():
     if 'username' not in session:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
 
     user = User.query.filter_by(email=session['username']).first()
 
