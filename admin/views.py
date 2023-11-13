@@ -7,6 +7,7 @@ from sqlalchemy.orm import make_transient
 from app import db, requires_roles
 from models import User, Draw
 from flask_login import login_required, current_user
+import secrets
 
 # CONFIG
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
@@ -41,7 +42,7 @@ def generate_winning_draw():
         db.session.commit()
 
     # get new winning numbers for draw
-    winning_numbers = [math.floor(random.uniform(1, 60)) for n in range(6)]
+    winning_numbers = [math.floor(random.uniform(1.0, 60.0)) for n in range(6)]
     winning_numbers.sort()
     winning_numbers_string = ''
     for i in range(6):
