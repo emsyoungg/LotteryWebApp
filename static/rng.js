@@ -6,12 +6,14 @@ function luckyDip() {
 
     // while set does not contain 6 values, create a random value between 1 and 60
     while (draw.size < 6) {
+
         min = Math.ceil(1);
         max = Math.floor(60);
         value = Math.floor(Math.random() * (max - min + 1) + min);
 
         // sets cannot contain duplicates so value is only added if it does not exist in set
-        draw.add(value)
+        if (!draw.includes(value)) {
+            draw.add(value)}
     }
 
     // turn set into an array
