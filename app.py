@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_qrcode import QRcode
 import logging
+from flask_talisman import Talisman
 
 
 # EVENT LOGGING
@@ -26,7 +27,6 @@ formatter = logging.Formatter('%(asctime)s : %(message)s', '%m/%d/%Y %I:%M:%S %p
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-
 # load .env
 load_dotenv()
 
@@ -39,8 +39,22 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.getenv('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.getenv('RECAPTCHA_PRIVATE_KEY')
 
+# custom CSP
+csp = {
+    'default-src': ['\'self\'',
+                    'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css'],
+    'frame-src': ['\'self\'',
+                  'https://www.google.com/recaptcha/',
+                  'https://recaptcha.google.com/recaptcha/'],
+    'script-src': ['\'self\'',
+                   '\'unsafe-inline\'',
+                   'https://www.google.com/recaptcha/',
+                   'https://www.gstatic.com/recaptcha/']
+}
+
 # initialise database
 db = SQLAlchemy(app)
+talisman = Talisman(app, content_security_policy=csp)
 
 qrcode = QRcode(app)
 
