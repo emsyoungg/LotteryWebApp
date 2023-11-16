@@ -1,13 +1,16 @@
 # IMPORTS
+import logging
 import math
 import random
-from flask import Blueprint, render_template, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for, session, request
 from sqlalchemy.orm import make_transient
 
 from app import db, requires_roles
 from models import User, Draw
 from flask_login import login_required, current_user
 import secrets
+
+from users.forms import RegisterForm
 
 # CONFIG
 admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
@@ -179,3 +182,47 @@ def logs():
 def view_user_activity():
     all_users = User.query.filter_by(role='user').all()
     return render_template('admin/admin.html', name=current_user.firstname, all_users=all_users)
+
+
+@admin_blueprint.route('/register_admin', methods=['GET', 'POST'])
+@login_required
+@requires_roles('admin')
+def register():
+    # create signup form object
+    form = RegisterForm()
+
+    # if request method is POST or form is valid
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        # if this returns a user, then the email already exists in database
+
+        # if email already exists redirect user back to signup page with error message so user can try again
+        if user:
+            flash('Email address already exists')
+            return render_template('users/register.html', form=form)
+
+        # create a new user with the form data
+        new_user = User(email=form.email.data,
+                        firstname=form.firstname.data,
+                        lastname=form.lastname.data,
+                        phone=form.phone.data,
+                        password=form.password.data,
+                        date_of_birth=form.date_of_birth.data,
+                        postcode=form.postcode.data,
+                        role='admin')
+
+        # add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+        # stores users username in apps session for setup_2fa to access
+        session['username'] = new_user.email
+
+        # logs user registration
+        logging.warning('SECURITY - Admin registration [%s, %s]', form.email.data, request.remote_addr)
+
+        # sends admin to admin page
+        flash(f"New admin successfully created.")
+        return redirect(url_for('admin.admin'))
+    # if request method is GET or form not valid re-render signup page
+    return render_template('users/register.html', form=form)
