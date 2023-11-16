@@ -42,7 +42,7 @@ def generate_winning_draw():
         db.session.commit()
 
     # get new winning numbers for draw
-    winning_numbers = [math.floor(random.uniform(1.0, 60.0)) for n in range(6)]
+    winning_numbers = [math.floor(secrets.choice(range(1, 61))) for n in range(6)]
     winning_numbers.sort()
     winning_numbers_string = ''
     for i in range(6):

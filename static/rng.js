@@ -17,7 +17,7 @@ function luckyDip() {
             value = Math.floor(csRandomNumber * (max - min + 1) + min);
 
             // sets cannot contain duplicates so value is only added if it does not exist in set
-            if (!draw.includes(value)) {
+            if (!draw.has(value)) {
                 draw.add(value)}
         }
 
