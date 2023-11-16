@@ -44,6 +44,7 @@ class User(db.Model, UserMixin):
     lastname = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(100), nullable=False)
     date_of_birth = db.Column(db.String(100), nullable=False)
+    postcode = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(100), nullable=False, default='user')
     pin_key = db.Column(db.String(32), nullable=False, default=pyotp.random_base32())
     registered_on = db.Column(db.DateTime, nullable=False)
@@ -54,13 +55,14 @@ class User(db.Model, UserMixin):
     # Define the relationship to Draw
     draws = db.relationship('Draw')
 
-    def __init__(self, email, firstname, lastname, phone, password, date_of_birth, role):
+    def __init__(self, email, firstname, lastname, phone, password, date_of_birth, postcode, role):
         self.date_of_birth = date_of_birth
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
         self.phone = phone
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        self.postcode = postcode
         self.role = role
         self.registered_on = datetime.now()
         self.current_login = None
@@ -114,6 +116,7 @@ def init_db():
                      lastname='Jones',
                      phone='0191-123-4567',
                      date_of_birth='01/01/2001',
+                     postcode='DN2 7NY',
                      role='admin')
 
         db.session.add(admin)

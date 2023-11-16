@@ -39,6 +39,7 @@ def register():
                         phone=form.phone.data,
                         password=form.password.data,
                         date_of_birth=form.date_of_birth.data,
+                        postcode=form.postcode.data,
                         role='user')
 
         # add the new user to the database
