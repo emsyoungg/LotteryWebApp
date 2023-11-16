@@ -70,7 +70,7 @@ def login():
 
         user = User.query.filter_by(email=loginForm.username.data).first()
 
-        if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data):
+        if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data) or not user.verify_postcode(loginForm.postcode.data):
             session['authentication_attempts'] += 1
             logging.warning('SECURITY - Invalid Log In Attempt [%s, %s]', loginForm.username.data, request.remote_addr)
 

@@ -19,6 +19,9 @@ def decrypt(data, post_key):
 
 class User(db.Model, UserMixin):
 
+    def verify_postcode(self, postcode):
+        return self.postcode == postcode
+
     def verify_pin(self, pin):
         return pyotp.TOTP(self.pin_key).verify(pin)
 
