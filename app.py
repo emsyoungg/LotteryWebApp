@@ -55,7 +55,6 @@ csp = {
 # initialise database
 db = SQLAlchemy(app)
 talisman = Talisman(app, content_security_policy=csp)
-
 qrcode = QRcode(app)
 
 

@@ -6,7 +6,7 @@ from app import db, requires_roles
 from lottery.forms import DrawForm
 from models import Draw
 from flask_login import login_required, current_user
-from cryptography.fernet import Fernet
+
 
 # CONFIG
 lottery_blueprint = Blueprint('lottery', __name__, template_folder='templates')
