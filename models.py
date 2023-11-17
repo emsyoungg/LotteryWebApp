@@ -54,6 +54,9 @@ class User(db.Model, UserMixin):
     current_login = db.Column(db.DateTime, nullable=True)
     last_login = db.Column(db.DateTime, nullable=True)
     post_key = db.Column(db.BLOB, nullable=False, default=Fernet.generate_key())
+    current_ip = db.Column(db.String(100), nullable=True)
+    last_ip = db.Column(db.String(100), nullable=True)
+    successful_logins = db.Column(db.Integer, nullable=False)
 
     # Define the relationship to Draw
     draws = db.relationship('Draw')
@@ -70,6 +73,9 @@ class User(db.Model, UserMixin):
         self.registered_on = datetime.now()
         self.current_login = None
         self.last_login = None
+        self.current_ip = None
+        self.last_ip = None
+        self.successful_logins = 0
 
 
 class Draw(db.Model):

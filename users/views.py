@@ -88,6 +88,9 @@ def login():
                             request.remote_addr)
             current_user.last_login = current_user.current_login
             current_user.current_login = datetime.now()
+            current_user.last_ip = current_user.current_ip
+            current_user.current_ip = request.remote_addr
+            current_user.successful_logins = current_user.successful_logins + 1
             db.session.commit()
 
             if user.role == 'admin':
