@@ -109,7 +109,8 @@ def account():
                            firstname=current_user.firstname,
                            lastname=current_user.lastname,
                            phone=current_user.phone,
-                           date_of_birth=current_user.date_of_birth)
+                           date_of_birth=current_user.date_of_birth,
+                           postcode=current_user.postcode)
 
 
 @users_blueprint.route('/logout')
