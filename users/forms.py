@@ -35,7 +35,7 @@ class RegisterForm(FlaskForm):
             raise ValidationError(f"Invalid date, must be a valid DD/MM/YYYY")
 
     def postcode_validator(self, postcode):
-        pattern = re.compile(r'^[A-Z\d]{2}[\dA-Z]\s[A-Z]{3}$|^[A-Z]{2}[\dA-Z]\s[A-Z]{3}$|^[A-Z]{3}[\dA-Z]\s[A-Z]{3}$')
+        pattern = re.compile(r'^([A-Z][0-9]\s[0-9][A-Z]{2}|[A-Z][0-9]{2}\s[0-9][A-Z]{2}|[A-Z]{2}[0-9]\s[0-9][A-Z]{2})$')
         if not pattern.match(postcode.data):
             raise ValidationError(f"Invalid postcode, must be XY YXX, XYY YXX or XXY YXX where X is an uppercase "
                                   f"letter and Y is a digit.")
