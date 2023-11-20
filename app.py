@@ -49,7 +49,8 @@ csp = {
     'script-src': ['\'self\'',
                    '\'unsafe-inline\'',
                    'https://www.google.com/recaptcha/',
-                   'https://www.gstatic.com/recaptcha/']
+                   'https://www.gstatic.com/recaptcha/'],
+    'img-src': ['data:']
 }
 
 # initialise database

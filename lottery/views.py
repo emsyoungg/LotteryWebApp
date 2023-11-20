@@ -27,7 +27,7 @@ def lottery():
 def create_draw():
     form = DrawForm()
 
-    if form.validate_on_submit():
+    if form.is_submitted() and form.validate():
         submitted_numbers = (str(form.number1.data) + ' '
                           + str(form.number2.data) + ' '
                           + str(form.number3.data) + ' '
@@ -43,7 +43,6 @@ def create_draw():
         # re-render lottery.page
         flash('Draw %s submitted.' % submitted_numbers)
         return redirect(url_for('lottery.lottery'))
-
     return render_template('lottery/lottery.html', name=current_user.firstname, form=form)
 
 

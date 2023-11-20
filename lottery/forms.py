@@ -1,3 +1,4 @@
+from flask import flash
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SubmitField
 from wtforms.validators import DataRequired, ValidationError, NumberRange
@@ -5,11 +6,12 @@ from wtforms.validators import DataRequired, ValidationError, NumberRange
 
 class DrawForm(FlaskForm):
     def validate(self):
-        standard_validators = FlaskForm.validate(self)
+        standard_validators = super(DrawForm, self).validate()
         if standard_validators:
             numbers = [self.number1.data, self.number2.data, self.number3.data, self.number4.data, self.number5.data, self.number6.data]
             if len(set(numbers))==6:
                 return True
+        #flash(f"Numbers must be unique")
         return False
 
     def is_valid_number(self, number):

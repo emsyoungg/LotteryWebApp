@@ -30,3 +30,6 @@
 11/17/2023 05:15:53 PM : SECURITY - Admin registration [emily03young@gmail.com, 127.0.0.1]
 11/17/2023 05:16:28 PM : SECURITY - User log out [1, admin@email.com, 127.0.0.1]
 11/17/2023 05:17:21 PM : SECURITY - User login [3, emily03young@gmail.com, 127.0.0.1]
+11/20/2023 03:52:44 PM : SECURITY - User registration [emily03young@gmail.com, 127.0.0.1]
+11/20/2023 03:55:02 PM : SECURITY - User registration [emily03young@gmail.com, 127.0.0.1]
+11/20/2023 03:56:16 PM : SECURITY - User login [2, emily03young@gmail.com, 127.0.0.1]
