@@ -136,7 +136,10 @@
                             <th>Email</th>
                             <th>Registration</th>
                             <th>Current Login</th>
+                            <th>Current Login IP</th>
                             <th>Previous Login</th>
+                            <th>Previous Login IP</th>
+                            <th>Successful Logins</th>
                         </tr>
                         {% for user in all_users %}
                             <tr>
@@ -144,7 +147,10 @@
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.registered_on }}</td>
                                 <td>{{ user.current_login }}</td>
+                                <td>{{ user.current_ip }}</td>
                                 <td>{{ user.last_login }}</td>
+                                <td>{{ user.last_ip }}</td>
+                                <td>{{ user.successful_logins }}</td>
                             </tr>
                         {% endfor %}
                     </table>
