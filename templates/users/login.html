@@ -25,11 +25,17 @@
                     <div class="field">
                         <div class="control">
                             {{ loginForm.password(class="input", placeholder="Password") }}
+                            {% for error in loginForm.password.errors %}
+                                {{ error }}
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="field">
                         <div class="control">
                             {{ loginForm.postcode(class="input", placeholder="Postcode") }}
+                            {% for error in loginForm.postcode.errors %}
+                                {{ error }}
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="field">

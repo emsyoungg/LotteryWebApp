@@ -6,17 +6,18 @@ from wtforms.validators import DataRequired, ValidationError, NumberRange
 
 class DrawForm(FlaskForm):
     def validate(self):
-        standard_validators = super(DrawForm, self).validate()
+        standard_validators = FlaskForm.validate(self)
         if standard_validators:
             numbers = [self.number1.data, self.number2.data, self.number3.data, self.number4.data, self.number5.data, self.number6.data]
             if len(set(numbers))==6:
                 return True
-        #flash(f"Numbers must be unique")
+            else:
+                self.number1.errors.append('Numbers must be unique.')
         return False
 
-    def is_valid_number(self, number):
+    """def is_valid_number(self, number):
         if not (0 < number.data < 61):
-            raise ValidationError(f"Number must be between 1 and 60.")
+            raise ValidationError(f"Number must be between 1 and 60.")"""
 
     number1 = IntegerField(id='no1', validators=[DataRequired("There must be 6 entries"), NumberRange(min=1, max=60, message="Number must be between 1 and 60.")])
     number2 = IntegerField(id='no2', validators=[DataRequired("There must be 6 entries"), NumberRange(min=1, max=60, message="Number must be between 1 and 60.")])

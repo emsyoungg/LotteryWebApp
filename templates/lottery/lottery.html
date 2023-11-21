@@ -10,36 +10,54 @@
 
     <div class="column is-8 is-offset-2">
         {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="notification is-danger">
-                        {{ messages[0] }}
-                    </div>
-                {% endif %}
-            {% endwith %}
-
-        <h4 class="title is-4">Create Draw</h4>
-        <div class="box">
-            {% if form %}
+            {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <h4 class="title is-4">Create Draw</h4>
+    <div class="box">
+        {% if form %}
             <form method="POST">
                 <div class="columns is-multiline is-centered">
                     {{ form.csrf_token() }}
                     <div class="column is-one-sixth">
                         {{ form.number1(class="input", placeholder="No. 1") }}
+                        {% for error in form.number1.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                     <div class="column is-one-sixth">
                         {{ form.number2(class="input", placeholder="No. 2") }}
+                        {% for error in form.number2.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                     <div class="column is-one-sixth">
                         {{ form.number3(class="input", placeholder="No. 3") }}
+                        {% for error in form.number3.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                     <div class="column is-one-sixth">
                         {{ form.number4(class="input", placeholder="No. 4") }}
+                        {% for error in form.number4.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                     <div class="column is-one-sixth">
                         {{ form.number5(class="input", placeholder="No. 5") }}
+                        {% for error in form.number5.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                     <div class="column is-one-sixth">
                         {{ form.number6(class="input", placeholder="No. 6") }}
+                        {% for error in form.number6.errors %}
+                                {{ error }}
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="field">
@@ -51,16 +69,17 @@
                     {{ form.submit(class="button is-info is-centered") }}
                 </div>
             </form>
-            {% else %}
-                {# render play again button if current lottery round has been played #}
-                <form method="POST" action="/create_draw">
-                    <div>
-                        <button class="button is-info is-centered">Create New Draw</button>
-                    </div>
-                </form>
-            {% endif %}
-        </div>
+        {% else %}
+            {# render play again button if current lottery round has been played #}
+            <form method="POST" action="/create_draw">
+                <div>
+                    <button class="button is-info is-centered">Create New Draw</button>
+                </div>
+            </form>
+        {% endif %}
     </div>
+
+
     <div class="column is-4 is-offset-4">
         <h4 class="title is-4">Playable Draws</h4>
         <div class="box">

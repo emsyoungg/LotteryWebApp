@@ -1,6 +1,7 @@
 # IMPORTS
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from sqlalchemy.orm import make_transient
+from wtforms import ValidationError
 
 from app import db, requires_roles
 from lottery.forms import DrawForm
