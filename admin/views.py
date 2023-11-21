@@ -52,8 +52,8 @@ def generate_winning_draw():
         winning_numbers_string += str(winning_numbers[i]) + ' '
     winning_numbers_string = winning_numbers_string[:-1]
 
-    # create a new draw object.
-    new_winning_draw = Draw(user_id=current_user.id, numbers=winning_numbers_string, master_draw=True, lottery_round=lottery_round, post_key=current_user.post_key)
+    # create a new draw object. would be draw_key = current_user.draw kwy for symmetric encryption
+    new_winning_draw = Draw(user_id=current_user.id, numbers=winning_numbers_string, master_draw=True, lottery_round=lottery_round, public_key=current_user.public_key)
 
     # add the new winning draw to the database
     db.session.add(new_winning_draw)
@@ -77,7 +77,10 @@ def view_winning_draw():
     if current_winning_draw:
 
         make_transient(current_winning_draw)
-        current_winning_draw.view_draw(current_user.post_key)
+        # SYMMETRIC ENCRYPTION
+        #current_winning_draw.view_draw(current_user.draw_key)
+        # ASYMMETRIC ENCRYPTION
+        current_winning_draw.view_draw(current_user.private_key)
         # re-render admin page with current winning draw and lottery round
         return render_template('admin/admin.html', winning_draw=current_winning_draw, name=current_user.firstname)
 
@@ -98,7 +101,7 @@ def run_lottery():
 
     # if current unplayed winning draw exists
     if current_winning_draw:
-        current_winning_draw.view_draw(current_user.post_key)
+        current_winning_draw.view_draw(current_user.private_key)
 
         # get all unplayed user draws
         user_draws = Draw.query.filter_by(master_draw=False, been_played=False).all()
@@ -118,7 +121,7 @@ def run_lottery():
                 # get the owning user (instance/object)
                 user = User.query.filter_by(id=draw.user_id).first()
                 #decrypt draw
-                draw.view_draw(user.post_key)
+                draw.view_draw(user.private_key)
 
                 # if user draw matches current unplayed winning draw
                 if draw.numbers == current_winning_draw.numbers:

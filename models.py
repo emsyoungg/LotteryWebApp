@@ -1,20 +1,22 @@
 from datetime import datetime
 
 import pyotp
+import rsa
 
 from app import db, app
 from flask_login import UserMixin
 
 from cryptography.fernet import Fernet
 import bcrypt
+import pickle
 
 
-def encrypt(data, post_key):
-    return Fernet(post_key).encrypt(bytes(data, 'utf-8'))
+def encrypt(data, draw_key):
+    return Fernet(draw_key).encrypt(bytes(data, 'utf-8'))
 
 
-def decrypt(data, post_key):
-    return Fernet(post_key).decrypt(data).decode('utf-8')
+def decrypt(data, draw_key):
+    return Fernet(draw_key).decrypt(data).decode('utf-8')
 
 
 class User(db.Model, UserMixin):
@@ -53,7 +55,13 @@ class User(db.Model, UserMixin):
     registered_on = db.Column(db.DateTime, nullable=False)
     current_login = db.Column(db.DateTime, nullable=True)
     last_login = db.Column(db.DateTime, nullable=True)
-    post_key = db.Column(db.BLOB, nullable=False, default=Fernet.generate_key())
+    # SYMMETRIC ENCRYPTION
+    # draw_key = db.Column(db.BLOB, nullable=False, default=Fernet.generate_key())
+
+    # asymmetric encryption
+    public_key = db.Column(db.LargeBinary, nullable=False)
+    private_key = db.Column(db.LargeBinary, nullable=False)
+
     current_ip = db.Column(db.String(100), nullable=True)
     last_ip = db.Column(db.String(100), nullable=True)
     successful_logins = db.Column(db.Integer, nullable=False)
@@ -76,13 +84,21 @@ class User(db.Model, UserMixin):
         self.current_ip = None
         self.last_ip = None
         self.successful_logins = 0
+        # asymmetric encryption
+        publicKey, privateKey = rsa.newkeys(512)
+        self.public_key = pickle.dumps(publicKey)
+        self.private_key = pickle.dumps(privateKey)
 
 
 class Draw(db.Model):
 
-    def view_draw(self, post_key):
-        self.numbers = decrypt(self.numbers, post_key)
+    ## VIEW_DRAW FOR SYMMETRIC ENCRYPTION
+    # def view_draw(self, draw_key):
+    #    self.numbers = decrypt(self.numbers, draw_key)
 
+    ## ASYMMETRIC DECRYPTION view_draw
+    def view_draw(self, private_key):
+        self.numbers = rsa.decrypt(self.numbers, private_key).decode()
 
     __tablename__ = 'draws'
 
@@ -106,9 +122,13 @@ class Draw(db.Model):
     # Lottery round that draw is used
     lottery_round = db.Column(db.Integer, nullable=False, default=0)
 
-    def __init__(self, user_id, numbers, master_draw, lottery_round, post_key):
+    def __init__(self, user_id, numbers, master_draw, lottery_round,
+                 public_key):  # would be draw_key for symmetric encryption
         self.user_id = user_id
-        self.numbers = encrypt(numbers, post_key)
+        ## SYMMETRIC ENCRYPTION
+        #self.numbers = encrypt(numbers, post_key)
+        ## ASYMMETRIC ENCRYPTION
+        self.numbers = rsa.encrypt(numbers.encode(), public_key)
         self.been_played = False
         self.matches_master = False
         self.master_draw = master_draw

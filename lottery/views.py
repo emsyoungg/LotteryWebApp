@@ -35,7 +35,7 @@ def create_draw():
         numbers.sort()
         submitted_numbers = ' '.join(str(n) for n in numbers)
         # create a new draw with the form data.
-        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0, post_key=current_user.post_key)
+        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0, public_key=current_user.public_key)
         # add the new draw to the database
         db.session.add(new_draw)
         db.session.commit()
@@ -58,7 +58,8 @@ def view_draws():
     if len(playable_draws) != 0:
         for draw in playable_draws:
             make_transient(draw)
-            draw.view_draw(current_user.post_key)
+            # symmetric encryption: draw.view_draw(current_user.draw_key)
+            draw.view_draw(current_user.private_key)
         # re-render lottery page with playable draws
         return render_template('lottery/lottery.html', playable_draws=playable_draws)
     else:
