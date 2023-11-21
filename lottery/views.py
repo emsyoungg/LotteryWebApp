@@ -29,12 +29,11 @@ def create_draw():
     form = DrawForm()
 
     if form.is_submitted() and form.validate():
-        submitted_numbers = (str(form.number1.data) + ' '
-                          + str(form.number2.data) + ' '
-                          + str(form.number3.data) + ' '
-                          + str(form.number4.data) + ' '
-                          + str(form.number5.data) + ' '
-                          + str(form.number6.data))
+        numbers = [form.number1.data, form.number2.data, form.number3.data, form.number4.data, form.number5.data,
+                   form.number6.data]
+        # save numbers in ascending order
+        numbers.sort()
+        submitted_numbers = ' '.join(str(n) for n in numbers)
         # create a new draw with the form data.
         new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0, post_key=current_user.post_key)
         # add the new draw to the database
