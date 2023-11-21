@@ -98,7 +98,7 @@ class Draw(db.Model):
 
     ## ASYMMETRIC DECRYPTION view_draw
     def view_draw(self, private_key):
-        self.numbers = rsa.decrypt(self.numbers, private_key).decode()
+        self.numbers = rsa.decrypt(self.numbers, pickle.loads(private_key)).decode()
 
     __tablename__ = 'draws'
 
@@ -126,9 +126,9 @@ class Draw(db.Model):
                  public_key):  # would be draw_key for symmetric encryption
         self.user_id = user_id
         ## SYMMETRIC ENCRYPTION
-        #self.numbers = encrypt(numbers, post_key)
+        # self.numbers = encrypt(numbers, post_key)
         ## ASYMMETRIC ENCRYPTION
-        self.numbers = rsa.encrypt(numbers.encode(), public_key)
+        self.numbers = rsa.encrypt(numbers.encode(), pickle.loads(public_key))
         self.been_played = False
         self.matches_master = False
         self.master_draw = master_draw
