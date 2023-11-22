@@ -36,6 +36,7 @@ class User(db.Model, UserMixin):
     def verify_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
 
+
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)

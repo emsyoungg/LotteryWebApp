@@ -2,6 +2,7 @@
 import logging
 from datetime import datetime
 
+import bcrypt
 from flask import Blueprint, render_template, flash, redirect, url_for, session, request
 from markupsafe import Markup
 from flask_login import login_required, current_user
@@ -155,15 +156,15 @@ def update_password():
 
     if form.validate_on_submit():
 
-        if current_user.password != form.current_password.data:
+        if not current_user.verify_password(form.current_password.data): #current_user.password != form.current_password.data:
             flash("Incorrect current password")
             return render_template('users/update_password.html', form=form)
         else:
-            if current_user.password == form.new_password.data:
+            if current_user.verify_password(form.new_password.data):
                 flash('New password must be different to current password')
                 return render_template('users/update_password.html', form=form)
             else:
-                current_user.password = form.new_password.data
+                current_user.password = bcrypt.hashpw(form.new_password.data.encode('utf-8'), bcrypt.gensalt())
                 db.session.commit()
                 flash('Password changed successfully')
 

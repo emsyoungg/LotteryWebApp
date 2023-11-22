@@ -35,3 +35,6 @@
 11/20/2023 03:56:16 PM : SECURITY - User login [2, emily03young@gmail.com, 127.0.0.1]
 11/21/2023 03:07:09 PM : SECURITY - User login [2, emily03young@gmail.com, 127.0.0.1]
 11/21/2023 10:41:17 PM : SECURITY - User registration [emily03young@gmail.com, 127.0.0.1]
+11/22/2023 11:55:16 AM : SECURITY - User registration [alex@ludwick.com, 127.0.0.1]
+11/22/2023 12:01:08 PM : SECURITY - User login [3, alex@ludwick.com, 127.0.0.1]
+11/22/2023 12:11:04 PM : SECURITY - User registration [alex@ludwick.com, 127.0.0.1]
