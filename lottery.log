@@ -54,3 +54,4 @@
 11/22/2023 02:20:48 PM : SECURITY - User log out [3, alex@ludwick.com, 127.0.0.1]
 11/22/2023 02:21:24 PM : SECURITY - User login [1, admin@email.com, 127.0.0.1]
 11/22/2023 02:24:06 PM : SECURITY - Admin registration [shelly@email.com, 127.0.0.1]
+11/22/2023 02:56:18 PM : SECURITY - User log out [1, admin@email.com, 127.0.0.1]
