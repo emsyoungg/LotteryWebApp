@@ -104,11 +104,11 @@ def run_lottery():
         current_winning_draw.view_draw(current_user.private_key)
 
         # get all unplayed user draws
-        user_draws = Draw.query.filter_by(master_draw=False, been_played=False).all()
+        unplayed_draws = Draw.query.filter_by(master_draw=False, been_played=False).all()
         results = []
 
         # if at least one unplayed user draw exists
-        if user_draws:
+        if unplayed_draws:
 
             # update current winning draw as played
             current_winning_draw.been_played = True
@@ -116,7 +116,7 @@ def run_lottery():
             db.session.commit()
 
             # for each unplayed user draw
-            for draw in user_draws:
+            for draw in unplayed_draws:
 
                 # get the owning user (instance/object)
                 user = User.query.filter_by(id=draw.user_id).first()

@@ -99,7 +99,8 @@ class Draw(db.Model):
 
     ## ASYMMETRIC DECRYPTION view_draw
     def view_draw(self, private_key):
-        self.numbers = rsa.decrypt(self.numbers, pickle.loads(private_key)).decode()
+        decrypted_numbers = rsa.decrypt(self.numbers, pickle.loads(private_key)).decode()
+        self.numbers = decrypted_numbers
 
     __tablename__ = 'draws'
 
