@@ -17,6 +17,7 @@ class SecurityFilter(logging.Filter):
         return 'SECURITY' in record.getMessage()
 
 
+# setting up event logging
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler('lottery.log', 'a')
@@ -56,6 +57,8 @@ csp = {
 # initialise database
 db = SQLAlchemy(app)
 talisman = Talisman(app, content_security_policy=csp)
+
+# setup qr code
 qrcode = QRcode(app)
 
 
@@ -65,6 +68,7 @@ def index():
     return render_template('main/index.html')
 
 
+# set up user roles
 def requires_roles(*roles):
     def wrapper(f):
         @wraps(f)

@@ -62,6 +62,7 @@ def register():
 # view user login
 @users_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    # if user hasn't logged in before set to 0
     if not session.get('authentication_attempts'):
         session['authentication_attempts'] = 0
 
@@ -85,8 +86,10 @@ def login():
             return render_template('users/login.html', loginForm=loginForm)
         else:
             login_user(user)
+            # logs user login
             logging.warning('SECURITY - User login [%s, %s, %s]', current_user.id, loginForm.username.data,
                             request.remote_addr)
+            # update user details in database
             current_user.last_login = current_user.current_login
             current_user.current_login = datetime.now()
             current_user.last_ip = current_user.current_ip
@@ -120,6 +123,7 @@ def account():
 @users_blueprint.route('/logout')
 @login_required
 def logout():
+    # log user logout
     logging.warning('SECURITY - User log out [%s, %s, %s]', current_user.id, current_user.email,
                     request.remote_addr)
     logout_user()
@@ -130,7 +134,7 @@ def logout():
 def setup_2fa():
     if 'username' not in session:
         return redirect(url_for('index'))
-
+    # find user
     user = User.query.filter_by(email=session['username']).first()
 
     if not user:
@@ -143,7 +147,7 @@ def setup_2fa():
         'Expires': '0'
     }
 
-
+# reset login if locked out
 @users_blueprint.route('/reset')
 def reset():
     session['authentication_attempts'] = 0
@@ -160,10 +164,12 @@ def update_password():
             flash("Incorrect current password")
             return render_template('users/update_password.html', form=form)
         else:
+            # checks new password isn't same as old password
             if current_user.verify_password(form.new_password.data):
                 flash('New password must be different to current password')
                 return render_template('users/update_password.html', form=form)
             else:
+                # sets new password
                 current_user.password = bcrypt.hashpw(form.new_password.data.encode('utf-8'), bcrypt.gensalt())
                 db.session.commit()
                 flash('Password changed successfully')

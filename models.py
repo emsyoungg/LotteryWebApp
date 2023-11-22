@@ -11,16 +11,19 @@ import bcrypt
 import pickle
 
 
+# encryption function
 def encrypt(data, draw_key):
     return Fernet(draw_key).encrypt(bytes(data, 'utf-8'))
 
 
+# decryption function
 def decrypt(data, draw_key):
     return Fernet(draw_key).decrypt(data).decode('utf-8')
 
 
 class User(db.Model, UserMixin):
 
+    # functions for verifying login details
     def verify_postcode(self, postcode):
         return self.postcode == postcode
 
@@ -36,7 +39,7 @@ class User(db.Model, UserMixin):
     def verify_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password)
 
-
+    ## create users table in database
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -82,6 +85,7 @@ class User(db.Model, UserMixin):
         self.registered_on = datetime.now()
         self.current_login = None
         self.last_login = None
+        # advanced tasks
         self.current_ip = None
         self.last_ip = None
         self.successful_logins = 0
