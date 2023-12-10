@@ -132,7 +132,7 @@ class Draw(db.Model):
                  public_key):  # would be draw_key for symmetric encryption
         self.user_id = user_id
         ## SYMMETRIC ENCRYPTION
-        # self.numbers = encrypt(numbers, post_key)
+        # self.numbers = encrypt(numbers, draw_key)
         ## ASYMMETRIC ENCRYPTION
         self.numbers = rsa.encrypt(numbers.encode(), pickle.loads(public_key))
         self.been_played = False

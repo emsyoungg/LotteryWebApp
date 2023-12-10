@@ -102,7 +102,7 @@ login_manager.login_view = 'users.login'
 
 from models import User
 
-
+# Login manager user loader
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
