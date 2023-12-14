@@ -18,7 +18,7 @@ class RegisterForm(FlaskForm):
                 raise ValidationError(f"Character {char} is not allowed.")
 
     def is_valid_phone_number(self, phone):
-        pattern = re.compile(r'^\d{4}-\d{3}-\d{4}$')
+        pattern = re.compile(r'^\d{4}-\d{3}-\d{4}$') # XXXX-XXX-XXXX pattern
         if not pattern.match(phone.data):
             raise ValidationError(f"Phone number must be in form XXXX-XXX-XXXX")
 
@@ -53,6 +53,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField()
 
 
+# Handles login form data
 class LoginForm(FlaskForm):
     username = EmailField('Username', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -62,6 +63,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField()
 
 
+# Form for resetting password
 class PasswordForm(FlaskForm):
 
     def is_valid_password(self, new_password):

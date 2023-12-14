@@ -30,7 +30,6 @@ def admin():
 @login_required
 @requires_roles('admin')
 def generate_winning_draw():
-
     # get current winning draw
     current_winning_draw = Draw.query.filter_by(master_draw=True).first()
     lottery_round = 1
@@ -53,7 +52,8 @@ def generate_winning_draw():
     winning_numbers_string = winning_numbers_string[:-1]
 
     # create a new draw object. would be draw_key = current_user.draw kwy for symmetric encryption
-    new_winning_draw = Draw(user_id=current_user.id, numbers=winning_numbers_string, master_draw=True, lottery_round=lottery_round, public_key=current_user.public_key)
+    new_winning_draw = Draw(user_id=current_user.id, numbers=winning_numbers_string, master_draw=True,
+                            lottery_round=lottery_round, public_key=current_user.public_key)
 
     # add the new winning draw to the database
     db.session.add(new_winning_draw)
@@ -69,16 +69,14 @@ def generate_winning_draw():
 @login_required
 @requires_roles('admin')
 def view_winning_draw():
-
     # get winning draw from DB
-    current_winning_draw = Draw.query.filter_by(master_draw=True,been_played=False).first()
+    current_winning_draw = Draw.query.filter_by(master_draw=True, been_played=False).first()
 
     # if a winning draw exists
     if current_winning_draw:
-
         make_transient(current_winning_draw)
         # SYMMETRIC ENCRYPTION
-        #current_winning_draw.view_draw(current_user.draw_key)
+        # current_winning_draw.view_draw(current_user.draw_key)
         # ASYMMETRIC ENCRYPTION
         current_winning_draw.view_draw(current_user.private_key)
         # re-render admin page with current winning draw and lottery round
@@ -94,10 +92,8 @@ def view_winning_draw():
 @login_required
 @requires_roles('admin')
 def run_lottery():
-
     # get current unplayed winning draw
     current_winning_draw = Draw.query.filter_by(master_draw=True, been_played=False).first()
-
 
     # if current unplayed winning draw exists
     if current_winning_draw:
@@ -120,12 +116,11 @@ def run_lottery():
 
                 # get the owning user (instance/object)
                 user = User.query.filter_by(id=draw.user_id).first()
-                #decrypt draw
+                # decrypt draw
                 draw.view_draw(user.private_key)
 
                 # if user draw matches current unplayed winning draw
                 if draw.numbers == current_winning_draw.numbers:
-
                     # add details of winner to list of results
                     results.append((current_winning_draw.lottery_round, draw.numbers, draw.user_id, user.email))
 
@@ -191,14 +186,13 @@ def view_user_activity():
 @login_required
 @requires_roles('admin')
 def register():
-    # create signup form object
+    # create signup form
     form = RegisterForm()
 
-    # if request method is POST or form is valid
+    # if form is valid
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         # if this returns a user, then the email already exists in database
-
         # if email already exists redirect user back to signup page with error message so user can try again
         if user:
             flash('Email address already exists')
@@ -227,5 +221,5 @@ def register():
         # sends admin to admin page
         flash(f"New admin successfully created.")
         return redirect(url_for('admin.admin'))
-    # if request method is GET or form not valid re-render signup page
+    # if form not valid re-render signup page
     return render_template('users/register.html', form=form)

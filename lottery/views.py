@@ -1,16 +1,14 @@
 # IMPORTS
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, flash, redirect, url_for
 from sqlalchemy.orm import make_transient
-from wtforms import ValidationError
-
 from app import db, requires_roles
 from lottery.forms import DrawForm
 from models import Draw
 from flask_login import login_required, current_user
 
-
 # CONFIG
 lottery_blueprint = Blueprint('lottery', __name__, template_folder='templates')
+
 
 # VIEWS
 # view lottery page
@@ -27,7 +25,7 @@ def lottery():
 @requires_roles('user')
 def create_draw():
     form = DrawForm()
-
+    # validate forms draw numbers
     if form.is_submitted() and form.validate():
         numbers = [form.number1.data, form.number2.data, form.number3.data, form.number4.data, form.number5.data,
                    form.number6.data]
@@ -35,7 +33,8 @@ def create_draw():
         numbers.sort()
         submitted_numbers = ' '.join(str(n) for n in numbers)
         # create a new draw with the form data.
-        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0, public_key=current_user.public_key)
+        new_draw = Draw(user_id=current_user.id, numbers=submitted_numbers, master_draw=False, lottery_round=0,
+                        public_key=current_user.public_key)
         # add the new draw to the database
         db.session.add(new_draw)
         db.session.commit()
@@ -58,7 +57,8 @@ def view_draws():
     if len(playable_draws) != 0:
         for draw in playable_draws:
             make_transient(draw)
-            # symmetric encryption: draw.view_draw(current_user.draw_key)
+            # symmetric encryption would be: draw.view_draw(current_user.draw_key)
+            # asymmetric:
             draw.view_draw(current_user.private_key)
         # re-render lottery page with playable draws
         return render_template('lottery/lottery.html', playable_draws=playable_draws)
@@ -90,10 +90,9 @@ def check_draws():
 @login_required
 @requires_roles('user')
 def play_again():
+    # deletes only current users draws
     Draw.query.filter_by(been_played=True, master_draw=False, user_id=current_user.id).delete(synchronize_session=False)
     db.session.commit()
 
     flash("All played draws deleted.")
     return lottery()
-
-

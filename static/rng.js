@@ -8,10 +8,9 @@ function luckyDip() {
     while (draw.size < 6) {
 
         randomBuffer = new Uint32Array(6);
-        window.crypto.getRandomValues(randomBuffer);
+        window.crypto.getRandomValues(randomBuffer); // get cryptographically safe numbers
         for (let i = 0; i < randomBuffer.length; i++) {
             csRandomNumber = randomBuffer[i] / (0xFFFFFFFF)
-        //# do something with csRandomNumber
             min = Math.ceil(1);
             max = Math.floor(60);
             value = Math.floor(csRandomNumber * (max - min + 1) + min);

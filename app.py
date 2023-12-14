@@ -22,7 +22,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler('lottery.log', 'a')
 file_handler.setLevel(logging.WARNING)
-
+# add security filter
 file_handler.addFilter(SecurityFilter())
 formatter = logging.Formatter('%(asctime)s : %(message)s', '%m/%d/%Y %I:%M:%S %p')
 file_handler.setFormatter(formatter)

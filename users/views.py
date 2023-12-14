@@ -27,7 +27,6 @@ def register():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         # if this returns a user, then the email already exists in database
-
         # if email already exists redirect user back to signup page with error message so user can try again
         if user:
             flash('Email address already exists')
@@ -67,15 +66,17 @@ def login():
         session['authentication_attempts'] = 0
 
     loginForm = LoginForm()
-
+    # checks if the form data is valid
     if loginForm.validate_on_submit():
 
         user = User.query.filter_by(email=loginForm.username.data).first()
-
-        if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(loginForm.pin.data) or not user.verify_postcode(loginForm.postcode.data):
+        # checks login details are correct
+        if not user or not user.verify_password(loginForm.password.data) or not user.verify_pin(
+                loginForm.pin.data) or not user.verify_postcode(loginForm.postcode.data):
             session['authentication_attempts'] += 1
             logging.warning('SECURITY - Invalid Log In Attempt [%s, %s]', loginForm.username.data, request.remote_addr)
 
+            # max login attempts exceeded
             if session.get('authentication_attempts') >= 3:
                 flash(Markup('Number of incorrect login attempts exceeded. Please click <a href="/reset"> here </a> '
                              'to reset.'))
@@ -85,8 +86,9 @@ def login():
                 3 - session.get('authentication_attempts')))
             return render_template('users/login.html', loginForm=loginForm)
         else:
+            # logs user in
             login_user(user)
-            # logs user login
+            # logs the login
             logging.warning('SECURITY - User login [%s, %s, %s]', current_user.id, loginForm.username.data,
                             request.remote_addr)
             # update user details in database
@@ -147,6 +149,7 @@ def setup_2fa():
         'Expires': '0'
     }
 
+
 # reset login if locked out
 @users_blueprint.route('/reset')
 def reset():
@@ -159,8 +162,8 @@ def update_password():
     form = PasswordForm()
 
     if form.validate_on_submit():
-
-        if not current_user.verify_password(form.current_password.data): #current_user.password != form.current_password.data:
+        # checks current password
+        if not current_user.verify_password(form.current_password.data):
             flash("Incorrect current password")
             return render_template('users/update_password.html', form=form)
         else:
@@ -169,7 +172,7 @@ def update_password():
                 flash('New password must be different to current password')
                 return render_template('users/update_password.html', form=form)
             else:
-                # sets new password
+                # sets and hashes new password
                 current_user.password = bcrypt.hashpw(form.new_password.data.encode('utf-8'), bcrypt.gensalt())
                 db.session.commit()
                 flash('Password changed successfully')

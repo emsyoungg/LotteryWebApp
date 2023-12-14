@@ -11,12 +11,12 @@ import bcrypt
 import pickle
 
 
-# encryption function
+# encryption function for encrypting draw numbers
 def encrypt(data, draw_key):
     return Fernet(draw_key).encrypt(bytes(data, 'utf-8'))
 
 
-# decryption function
+# decryption function for decrypting draw numbers
 def decrypt(data, draw_key):
     return Fernet(draw_key).decrypt(data).decode('utf-8')
 
