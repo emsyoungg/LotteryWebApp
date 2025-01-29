@@ -1,6 +1,6 @@
 Lottery Web App
 
-This is a simple web app that allows users to play a lottery game. The user can select 6 numbers from 1 to 20 and then click the play button to see if they have won. The app will randomly select 6 numbers and compare them to the user's numbers. If the user has selected all 6 numbers correctly, they win the jackpot. If they have selected 3 or more numbers correctly, they win a smaller prize. If they have selected less than 3 numbers correctly, they lose. <br>
+This is a web app that allows users to play a simple lottery game. <br>
 The focus of this project is to focus on implementing secure coding practices and to ensure that the app is secure and free from vulnerabilities.  <br>
 To run the app locally, clone the repository and run the following command in the terminal:
 ```
